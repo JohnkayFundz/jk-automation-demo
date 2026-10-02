@@ -7,8 +7,9 @@ export const LeadIntakeWidget:React.FC<LeadIntakeWidgetProps>=({supabaseUrl,supa
  const handleChange=(e:React.ChangeEvent<HTMLInputElement|HTMLSelectElement>)=>setFormData(p=>({...p,[e.target.name]:e.target.value}));
  const handleSubmit=async(e:React.FormEvent)=>{e.preventDefault();setStatus('submitting');setErrorMessage('');
   if(!formData.full_name.trim()||!formData.email.trim()){setStatus('error');setErrorMessage('Please provide both your name and a valid email address.');return}
-  if(!supabaseUrl||!supabaseAnonKey){setStatus('error');setErrorMessage('Demo configuration is missing.');return}
-  try{const response=await fetch(supabaseUrl+'/rest/v1/inbound_leads',{method:'POST',headers:{'Content-Type':'application/json',apikey:supabaseAnonKey,Authorization:'Bearer '+supabaseAnonKey,'Accept-Profile':'sandbox','Content-Profile':'sandbox',Prefer:'return=minimal'},body:JSON.stringify(formData)});
+  const tenantSlug=import.meta.env.VITE_TENANT_SLUG;
+  if(!supabaseUrl||!supabaseAnonKey||!tenantSlug){setStatus('error');setErrorMessage('Demo configuration is missing.');return}
+  try{const response=await fetch(supabaseUrl+'/rest/v1/inbound_leads',{method:'POST',headers:{'Content-Type':'application/json',apikey:supabaseAnonKey,Authorization:'Bearer '+supabaseAnonKey,'Accept-Profile':'sandbox','Content-Profile':'sandbox',Prefer:'return=minimal'},body:JSON.stringify({...formData,tenant_slug:tenantSlug})});
    if(!response.ok){const errorData=await response.json().catch(()=>({}));throw new Error(errorData.message||'Submission failed. Please check your details.')}
    setStatus('success');setFormData({full_name:'',email:'',phone:'',service_requested:'Growth Automation Engine',budget_range:'₦100,000 - ₦150,000'});onSuccess?.();
   }catch(err){setStatus('error');setErrorMessage(err instanceof Error?err.message:'An unexpected network error occurred.')}
