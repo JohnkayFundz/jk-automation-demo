@@ -1,0 +1,2 @@
+import { LeadIntakeWidget } from './components/LeadIntakeWidget';
+export default function App(){return <main className="page-shell"><section className="hero"><p className="eyebrow">JOHNKAY AUTOMATION DEMO</p><h1>Turn enquiries into an automated follow-up system.</h1><p className="hero-copy">Submit a test enquiry below. The sandbox database will capture the lead and automatically queue a 48-hour follow-up.</p><LeadIntakeWidget supabaseUrl={import.meta.env.VITE_SUPABASE_URL} supabaseAnonKey={import.meta.env.VITE_SUPABASE_ANON_KEY}/></section></main>}
